@@ -2,6 +2,7 @@
 using EcoChemie.Autolab.Sdk;
 using EcoChemie.Autolab.Sdk.MultiAutolab;
 using EcoChemie.Autolab.SDK.Extensions;
+using EcoChemie.Autolab.Sdk.Nova;
 using EcoChemie.Utils;
 using System;
 using System.Collections;
@@ -33,7 +34,7 @@ namespace GEIS_charge_discharge_Autolab_ConsoleApp_03
             Console.WriteLine($"The starting exponent of frequency is: {args[2]}");
             float freq_exp_start = float.Parse(args[2]);
             // EIS stop exponent of frequency
-            Console.WriteLine($"The starting exponent of frequency is: {args[3]}");
+            Console.WriteLine($"The stop exponent of frequency is: {args[3]}");
             float freq_exp_stop = float.Parse(args[3]);
             // EIS exponent step of frequency
             Console.WriteLine($"The exponent step of frequency is: {args[4]}");
@@ -66,7 +67,7 @@ namespace GEIS_charge_discharge_Autolab_ConsoleApp_03
             }
 
             // initialize EIS array
-            double[,] eis_array = new double[no_freq_points, 5];
+            double[,] eis_array = new double[no_freq_points, 6];
 
             // save voltage data
             // path to voltage data
@@ -134,7 +135,7 @@ namespace GEIS_charge_discharge_Autolab_ConsoleApp_03
             // switch on eletrochemical cell of Autolab
             my_instrument.Ei.CellOnOff = EI.EICellOnOff.On;
 
-            Console.WriteLine("Measuring EIS now...");
+            Console.WriteLine("Measuring GEIS now...");
             // Switch on the FRA
             my_instrument.SwitchFraOn();
 
@@ -173,24 +174,26 @@ namespace GEIS_charge_discharge_Autolab_ConsoleApp_03
                                 double freq_current = Math.Pow(10, freq_exp_array[index_0]);
                                 freq_current = Math.Round(freq_current, 3);
                                 my_instrument.Fra.Frequency = freq_current;
-                                // wait 1 s
-                                System.Threading.Thread.Sleep(1000);
+                                // wait 5 s
+                                System.Threading.Thread.Sleep(5000);
                                 // perform measurement by starting FRA
                                 my_instrument.Fra.Start();
                                 // print end of FRA measurement
-                                Console.WriteLine("Measurement finished.");
+                                //Console.WriteLine("Measurement finished.");
                                 // measure EIS, impedance
                                 double Z_freq = my_instrument.Fra.Frequency;
                                 double Z_total = my_instrument.Fra.Modulus[0];
                                 double Z_phase = my_instrument.Fra.Phase[0];
                                 double Z_real = my_instrument.Fra.Real[0];
                                 double Z_imag = my_instrument.Fra.Imaginary[0];
+                                double Z_time = my_instrument.Fra.TimeData[0];
                                 // fill EIS array
                                 eis_array[index_0, 0] = Z_freq;
-                                eis_array[index_0, 1] = Z_total;
-                                eis_array[index_0, 2] = Z_phase;
-                                eis_array[index_0, 3] = Z_real;
-                                eis_array[index_0, 4] = Z_imag;
+                                eis_array[index_0, 1] = Z_real;
+                                eis_array[index_0, 2] = Z_imag;
+                                eis_array[index_0, 3] = Z_total;
+                                eis_array[index_0, 4] = Z_phase;
+                                eis_array[index_0, 5] = Z_time;
                                 // increment counter
                                 counter += 1;
                             }
@@ -213,19 +216,21 @@ namespace GEIS_charge_discharge_Autolab_ConsoleApp_03
                             // perform measurement by starting FRA
                             my_instrument.Fra.Start();
                             // print end of FRA measurement
-                            Console.WriteLine("Measurement finished.");
+                            //Console.WriteLine("Measurement finished.");
                             // measure EIS, impedance
                             double Z_freq = my_instrument.Fra.Frequency;
                             double Z_total = my_instrument.Fra.Modulus[0];
                             double Z_phase = my_instrument.Fra.Phase[0];
                             double Z_real = my_instrument.Fra.Real[0];
                             double Z_imag = my_instrument.Fra.Imaginary[0];
+                            double Z_time = my_instrument.Fra.TimeData[0];
                             // fill EIS array
                             eis_array[index_0, 0] = Z_freq;
-                            eis_array[index_0, 1] = Z_total;
-                            eis_array[index_0, 2] = Z_phase;
-                            eis_array[index_0, 3] = Z_real;
-                            eis_array[index_0, 4] = Z_imag;
+                            eis_array[index_0, 1] = Z_real;
+                            eis_array[index_0, 2] = Z_imag;
+                            eis_array[index_0, 3] = Z_total;
+                            eis_array[index_0, 4] = Z_phase;
+                            eis_array[index_0, 5] = Z_time;
 
                             // condition to save data
                             if (index_0 == (no_freq_points - 1))
@@ -248,7 +253,7 @@ namespace GEIS_charge_discharge_Autolab_ConsoleApp_03
                                 // main for loop to read pixel values
                                 for (int index_1 = 0; index_1 < no_freq_points; index_1++)
                                 {
-                                    for (int index_2 = 0; index_2 < 5; index_2++)
+                                    for (int index_2 = 0; index_2 < 6; index_2++)
                                     {
                                         sw.Write(eis_array[index_1, index_2] + "\t");
                                     }
@@ -285,24 +290,26 @@ namespace GEIS_charge_discharge_Autolab_ConsoleApp_03
                                 double freq_current = Math.Pow(10, freq_exp_array[index_0]);
                                 freq_current = Math.Round(freq_current, 3);
                                 my_instrument.Fra.Frequency = freq_current;
-                                // wait 1 s
-                                System.Threading.Thread.Sleep(1000);
+                                // wait 5 s
+                                System.Threading.Thread.Sleep(5000);
                                 // perform measurement by starting FRA
                                 my_instrument.Fra.Start();
                                 // print end of FRA measurement
-                                Console.WriteLine("Measurement finished.");
+                                //Console.WriteLine("Measurement finished.");
                                 // measure EIS, impedance
                                 double Z_freq = my_instrument.Fra.Frequency;
                                 double Z_total = my_instrument.Fra.Modulus[0];
                                 double Z_phase = my_instrument.Fra.Phase[0];
                                 double Z_real = my_instrument.Fra.Real[0];
                                 double Z_imag = my_instrument.Fra.Imaginary[0];
+                                double Z_time = my_instrument.Fra.TimeData[0];
                                 // fill EIS array
                                 eis_array[index_0, 0] = Z_freq;
-                                eis_array[index_0, 1] = Z_total;
-                                eis_array[index_0, 2] = Z_phase;
-                                eis_array[index_0, 3] = Z_real;
-                                eis_array[index_0, 4] = Z_imag;
+                                eis_array[index_0, 1] = Z_real;
+                                eis_array[index_0, 2] = Z_imag;
+                                eis_array[index_0, 3] = Z_total;
+                                eis_array[index_0, 4] = Z_phase;
+                                eis_array[index_0, 5] = Z_time;
                                 // increment counter
                                 counter += 1;
                             }
@@ -325,19 +332,21 @@ namespace GEIS_charge_discharge_Autolab_ConsoleApp_03
                             // perform measurement by starting FRA
                             my_instrument.Fra.Start();
                             // print end of FRA measurement
-                            Console.WriteLine("Measurement finished.");
+                            //Console.WriteLine("Measurement finished.");
                             // measure EIS, impedance
                             double Z_freq = my_instrument.Fra.Frequency;
                             double Z_total = my_instrument.Fra.Modulus[0];
                             double Z_phase = my_instrument.Fra.Phase[0];
                             double Z_real = my_instrument.Fra.Real[0];
                             double Z_imag = my_instrument.Fra.Imaginary[0];
+                            double Z_time = my_instrument.Fra.TimeData[0];
                             // fill EIS array
                             eis_array[index_0, 0] = Z_freq;
-                            eis_array[index_0, 1] = Z_total;
-                            eis_array[index_0, 2] = Z_phase;
-                            eis_array[index_0, 3] = Z_real;
-                            eis_array[index_0, 4] = Z_imag;
+                            eis_array[index_0, 1] = Z_real;
+                            eis_array[index_0, 2] = Z_imag;
+                            eis_array[index_0, 3] = Z_total;
+                            eis_array[index_0, 4] = Z_phase;
+                            eis_array[index_0, 5] = Z_time;
 
                             // condition to save data
                             if (index_0 == (no_freq_points - 1))
@@ -360,7 +369,7 @@ namespace GEIS_charge_discharge_Autolab_ConsoleApp_03
                                 // main for loop to read pixel values
                                 for (int index_1 = 0; index_1 < no_freq_points; index_1++)
                                 {
-                                    for (int index_2 = 0; index_2 < 5; index_2++)
+                                    for (int index_2 = 0; index_2 < 6; index_2++)
                                     {
                                         sw.Write(eis_array[index_1, index_2] + "\t");
                                     }
@@ -385,7 +394,7 @@ namespace GEIS_charge_discharge_Autolab_ConsoleApp_03
                 StreamReader sr = new StreamReader(fs);
                 // read first line
                 string firstLine = sr.ReadLine();
-                Console.WriteLine(firstLine);
+                //Console.WriteLine(firstLine);
                 // condition
                 if (firstLine == "stop")
                 {
